@@ -88,11 +88,6 @@ The platform focuses on making quality education accessible while helping studen
 ### Authentication
 
 * JWT (JSON Web Tokens)
-* Firebase Authentication
-
-### Cloud Services
-
-* Firebase Hosting
 
 ---
 
