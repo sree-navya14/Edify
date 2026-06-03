@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.7",
     "@reduxjs/toolkit": "^2.6.1",
     "@svgr/plugin-svgo": "^8.1.0",
     "@svgr/webpack": "^8.1.0",
@@ -12,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.3",
     "bcryptjs": "^3.0.2",
+    "cashfree-pg": "^6.0.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "css-select": "^5.1.0",

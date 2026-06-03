@@ -12,10 +12,13 @@ import Courses2 from "./components/courses2";
 import JavaCourse from "./pages/JavaCourse";
 import Profile from "./pages/profile";
 import PythonCourse from "./pages/pythonCourse";
+import MernCourse from "./pages/MernCourse";
 import CourseSchedule from "./pages/schedule";
 import EnrolledCourses from "./pages/EnrolledCourses";
 import CompletedCourses from "./pages/CompletedCourses";
 import About from './pages/AboutUs';
+import BuyCourse from "./pages/BuyCourse";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 // inside your <Routes> block
 
@@ -41,12 +44,24 @@ function App() {
         <Route path="/JavaCourse" element={<JavaCourse/>}/>
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/pythonCourse" element={<PythonCourse/>}/>
+        <Route
+          path="/MernCourse"
+          element={<MernCourse />}
+        />
   <Route path="/enrolled-courses" element={<EnrolledCourses />} />
   <Route path="/completed-courses" element={<CompletedCourses />} />
         <Route path="/forgotpassword" element={<ForgotPassword/>}/>
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/schedule/:courseId" element={<CourseSchedule />} />
         <Route path="/AboutUs" element={<About />} />
+        <Route
+          path="/buy-course"
+          element={<BuyCourse />}
+        />
+        <Route
+          path="/payment-success"
+          element={<PaymentSuccess />}
+        />
 
       </Routes>
       <Footer />

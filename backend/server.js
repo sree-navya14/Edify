@@ -5,6 +5,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
+const { Cashfree, CFEnvironment } = require("cashfree-pg");
+
+const cashfree = new Cashfree(
+  CFEnvironment.SANDBOX,
+  process.env.CASHFREE_CLIENT_ID,
+  process.env.CASHFREE_CLIENT_SECRET
+);
 
 const app = express();
 
@@ -32,6 +39,10 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   enrolledCourses: { type: [String], default: [] },
   completedCourses: { type: [String], default: [] },
+  purchasedCourses: {
+    type: [String],
+    default: []
+  },
   about: { type: String, default: "" },
   personalDetails: { type: String, default: "" },
   dayProgress: { type: Object, default: {} },
@@ -46,26 +57,91 @@ const User = mongoose.model('User', userSchema);
 
 // Auth token verification middleware
 const verifyToken = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: 'Unauthorized' });
+  let token = req.cookies.token;
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ message: 'Invalid token' });
-    req.user = decoded;
-    next();
-  });
+  if (!token && req.headers.authorization) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Unauthorized"
+    });
+  }
+
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    (err, decoded) => {
+      if (err) {
+        return res.status(403).json({
+          message: "Invalid token"
+        });
+      }
+
+      req.user = decoded;
+      next();
+    }
+  );
 };
 
 // Course details mapping
 const courseDetails = {
-  java_course: { 
-    title: "Java Developer", 
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlytRRYe4je0g5y3CR8NS1xkrAvurMcvSAxQ&s" 
+  python_course: {
+    title: "Python Developer",
+    image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800",
+    premium: false,
+    price: 0
   },
-  python_course: { 
-    title: "Python Developer", 
-    image: "/python.png" // or another URL
+
+  java_course: {
+    title: "Java Developer",
+    image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800",
+    premium: false,
+    price: 0
   },
+
+  qa_course: {
+    title: "Quality Assurance",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800",
+    premium: false,
+    price: 0
+  },
+
+  web_course: {
+    title: "Web Development",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800",
+    premium: false,
+    price: 0
+  },
+
+  mern_course: {
+    title: "MERN Stack",
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800",
+    premium: true,
+    price: 499
+  },
+
+  devops_course: {
+    title: "DevOps",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
+    premium: true,
+    price: 399
+  },
+
+  uiux_course: {
+    title: "UI/UX Design",
+    image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800",
+    premium: true,
+    price: 299
+  },
+
+  python_fullstack_course: {
+    title: "Python Full Stack",
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800",
+    premium: true,
+    price: 599
+  }
 };
 
 
@@ -255,6 +331,84 @@ app.get('/api/enrolled-courses', verifyToken, async (req, res) => {
   } catch (err) {
     console.error('Fetch courses error:', err);
     res.status(500).json({ message: 'Fetch courses failed' });
+  }
+});
+
+app.post(
+  "/api/create-order",
+  verifyToken,
+  async (req, res) => {
+    try {
+
+      const { courseId, amount, courseName } = req.body;
+
+      const orderRequest = {
+        order_amount: amount,
+        order_currency: "INR",
+
+        order_meta: {
+          return_url:
+            `http://localhost:3000/payment-success?courseName=${encodeURIComponent(courseName)}`
+        },
+
+        customer_details: {
+          customer_id:
+            req.user.id,
+          customer_phone:
+            "9999999999",
+        },
+      };
+
+      const response =
+        await cashfree.PGCreateOrder(
+          orderRequest
+        );
+
+      res.json(response.data);
+
+    } catch (err) {
+      console.error("FULL ERROR:");
+      console.error(err);
+
+      if (err.response) {
+        console.error(err.response.data);
+      }
+
+      res.status(500).json({
+        message: err.message || "Order creation failed"
+      });
+    }
+  }
+);
+
+app.post("/api/payment-success", verifyToken, async (req, res) => {
+  try {
+    const { courseName } = req.body;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    if (!user.purchasedCourses.includes(courseName)) {
+      user.purchasedCourses.push(courseName);
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      purchasedCourses: user.purchasedCourses
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Failed to save purchase"
+    });
   }
 });
 
