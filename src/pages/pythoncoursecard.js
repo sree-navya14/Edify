@@ -1,96 +1,84 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
 import "../styles/CourseCard.css";
 
 const CourseCardPython = () => {
   const [user, setUser] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const auth = getAuth();
-  const db = getFirestore();
-  const courseId = "python_course"; // Unique Course ID for Python
+  const [isCompleted, setIsCompleted] = useState(false); // if needed later
+  const courseId = "python_course";
 
-  // Function to check if the user is enrolled or has completed the course
-  const checkEnrollmentStatus = useCallback(async (userId) => {
-    try {
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
+  // Check user authentication and fetch profile
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/me", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          const enrolled = data.user.enrolledCourses?.includes(courseId);
+          setIsEnrolled(enrolled);
 
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        setIsCompleted(userData.completedCourses?.includes(courseId) || false);
-        setIsEnrolled(userData.enrolledCourses?.includes(courseId) || false);
+          const completed = data.user.completedCourses?.includes(courseId);
+          setIsCompleted(completed);
+        }
+        // if (res.ok) {
+        //   const data = await res.json();
+        //   setUser(data.user);
+        //   const completed = data.user.CompletedCourses?.includes(courseId);
+        //   setIsCompleted(completed);
+        // }
+      } catch (err) {
+        console.error("Not logged in or error fetching user:", err);
       }
-    } catch (error) {
-      console.error("Error checking enrollment status:", error);
-    }
-  }, [db, courseId]); // ✅ Dependencies to avoid stale closures
+    };
 
-  // Check user authentication
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+    fetchUser();
+  }, []);
 
-    return () => unsubscribe();
-  }, [auth]);
-
-  // Fetch enrollment status only when `user` is set
-  useEffect(() => {
-    if (user) {
-      checkEnrollmentStatus(user.uid);
-    }
-  }, [user, checkEnrollmentStatus]); // ✅ No warning, no infinite loop
-
-  // Function to enroll the user
   const handleEnrollment = async () => {
     if (!user) {
       alert("Please log in to enroll!");
       return;
     }
 
-    if (isCompleted) {
-      alert("You have already completed this course and cannot re-enroll.");
-      return;
-    }
-
     try {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+      const res = await fetch("http://localhost:5000/api/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ courseId }),
+      });
 
-      if (!userSnap.exists()) {
-        await setDoc(userRef, { enrolledCourses: [courseId], completedCourses: [] });
+      const data = await res.json();
+      if (res.ok) {
+        setIsEnrolled(true);
       } else {
-        await updateDoc(userRef, {
-          enrolledCourses: arrayUnion(courseId),
-        });
+        alert(data.message || "Failed to enroll");
       }
-
-      setIsEnrolled(true);
     } catch (error) {
-      console.error("Error enrolling in course:", error);
+      console.error("Enrollment error:", error);
     }
   };
 
   return (
-    <div className="course-card">
+    <div className="course-card1">
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlytRRYe4je0g5y3CR8NS1xkrAvurMcvSAxQ&s"
+        src="python.png"
         alt="Python Course"
-        className="course-images"
+        className="course-images1"
       />
       <div className="course-info">
-        <h2>Python Full Stack: Unleashing the Power of Web Applications</h2>
+        <h2>Become a Python Developer</h2>
         <p className="price">Free</p>
 
-        {/* Enrollment Button */}
         <button
-          className={`start-btn ${isEnrolled || isCompleted ? "enrolled" : ""}`}
+          className={`start-btn ${isEnrolled ? "enrolled" : ""}`}
           onClick={handleEnrollment}
-          disabled={isEnrolled || isCompleted}
+          disabled={isEnrolled}
         >
-          {isCompleted ? "Course Completed 🎉" : isEnrolled ? "Enrolled ✅" : "Start Now"}
+           {isCompleted ? "Course Completed 🎉" : isEnrolled ? "Enrolled ✅" : "Start Now"}
         </button>
 
         <ul className="course-details">
@@ -105,6 +93,7 @@ const CourseCardPython = () => {
 };
 
 export default CourseCardPython;
+
 
 
 

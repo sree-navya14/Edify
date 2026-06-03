@@ -4,12 +4,12 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #121212;
 }
 
 /* Login Card */
 .login-card {
-  background: #fff;
+  background: #1e1e1e;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -22,18 +22,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
-.logo {
-  height: 40px;
-  margin-right: 10px;
+.edify-logo {
+  /* height: 70px; */
+  /* margin-right: 10px; */
+  width: 150px;
+  margin-bottom: 15px;
+  filter: brightness(0) invert(1);
 }
 
 .brand-name {
   font-size: 22px;
   font-weight: bold;
-  color: #333;
+  color: #ffff;
 }
 
 /* Title */
@@ -41,7 +44,7 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #000;
+  color: #ffff;
 }
 
 /* Input Fields */
@@ -62,7 +65,7 @@
 }
 
 .forgot-password a {
-  color: #a02d91;
+  color: #ffff;
   text-decoration: none;
 }
 
@@ -90,7 +93,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f4f4f4;
+  background-color: #121212;
 }
 
 .auth-card {
@@ -152,7 +155,7 @@
 }
 
 a {
-  color: #007bff;
+  color: #ffff;
   text-decoration: none;
 }
 

@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-import {app} from "../components/firebase";  // Import Firebase config
+import { useNavigate } from "react-router-dom";
 import "../styles/auth2.css";
+// import axios from "axios";
 
 export default function Signup() {
-  const auth = getAuth();
-  const db = getFirestore(app);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -39,26 +37,26 @@ export default function Signup() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = userCredential.user;
-
-      // Update user's display name
-      await updateProfile(user, {
-        displayName: `${formData.firstName} ${formData.lastName}`,
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
-      // Store additional user info in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-        email: formData.email,
-        uid: user.uid,
-      });
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || "Registration failed");
 
       alert("Registration successful!");
+      navigate("/login"); // Redirect to login
     } catch (error) {
-      console.error("Error signing up:", error.message);
+      console.error("Registration error:", error.message);
       alert(error.message);
     }
   };
@@ -67,17 +65,15 @@ export default function Signup() {
     <div className="auth-container">
       <div className="auth-box">
         <img src="/edify.png" alt="Edify Logo" className="edify-logo" />
-        <h2 className="title">New account</h2>
-        <p className="subtext">
-          Have an account? <a href="/login">Login</a>
-        </p>
+        <h2 className="title">Create Account</h2>
+        
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} required />
             <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} required />
           </div>
           <div className="input-group">
-            <select name="phoneCode">
+            <select name="phoneCode" disabled>
               <option value="+91">+91</option>
             </select>
             <input type="text" name="phone" placeholder="Phone Number" onChange={handleChange} required />
@@ -92,8 +88,12 @@ export default function Signup() {
             <label htmlFor="terms">I agree to all terms & conditions</label>
           </div>
           <button type="submit" className="signup-button">Sign Up</button>
+          <p className="subtext">
+          Have an account? <a href="/login">Login</a>
+        </p>
         </form>
       </div>
     </div>
   );
 }
+

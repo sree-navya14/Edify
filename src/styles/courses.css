@@ -1,37 +1,93 @@
+/* Dropdown container */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
+/* Dropdown button */
 .dropdown-btn {
-  background-color: #007bff;
-  color: white;
+  background-color: #1f2937; /* Dark gray */
+  color: #f9fafb;            /* Light text */
   padding: 10px 15px;
   font-size: 16px;
-  border: none;
+  border: 1px solid #374151;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease-in-out;
 }
 
+.dropdown-btn:hover {
+  background-color: #374151; /* Slightly lighter on hover */
+}
+
+/* Dropdown list */
 .dropdown-content {
   position: absolute;
-  background-color: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #111827; /* Darker background */
+  border: 1px solid #374151;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   padding: 10px;
   width: 200px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  z-index: 10;
 }
 
-.dropdown-content p {
+/* Dropdown items */
+.dropdown-item {
   padding: 10px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 4px;
+  color: #e5e7eb;
+  background-color: transparent;
   transition: background 0.3s;
 }
 
-.dropdown-content p:hover {
-  background-color: #f1f1f1;
+.dropdown-item:hover {
+  background-color: #1f2937; /* Dark hover */
+}
+
+.dropdown-item.active {
+  background-color: #2563eb; /* Blue highlight */
+  color: #ffffff;
+}
+
+/* Loading and error states (optional extra styling) */
+.loading-state,
+.error-state,
+.no-courses {
+  color: #d1d5db;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Retry / View All buttons */
+.retry-btn,
+.view-all-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.retry-btn:hover,
+.view-all-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Course card hover (optional enhancement if not already styled) */
+.course-card:hover {
+  background-color: #1f2937;
+  transform: scale(1.02);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 

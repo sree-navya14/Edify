@@ -1,0 +1,110 @@
+.about-hero {
+  background-color: #0f0f0f;
+  padding: 80px 20px 40px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.about-hero h1 {
+  font-size: 48px;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.about-hero p {
+  font-size: 18px;
+  color: #a1a1aa;
+}
+
+.about-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: #121212;
+  color: #e4e4e7;
+  padding: 60px 20px;
+  gap: 40px;
+}
+
+.about-image {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.team-member img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.member-name {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #f4f4f5;
+  font-size: 16px;
+}
+
+.about-text {
+  flex: 1;
+  max-width: 500px;
+}
+
+.about-text h2 {
+  font-size: 28px;
+  color: #60a5fa;
+  margin-bottom: 10px;
+}
+
+.about-text p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #d1d5db;
+}
+
+.feature-list {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  margin-bottom: 10px;
+  font-size: 15px;
+  position: relative;
+  padding-left: 25px;
+}
+
+.feature-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #4ade80;
+}
+
+/* Optional: Media Query for extra control on mobile */
+@media (max-width: 500px) {
+  .team-member img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .about-hero h1 {
+    font-size: 36px;
+  }
+
+  .about-text h2 {
+    font-size: 24px;
+  }
+}

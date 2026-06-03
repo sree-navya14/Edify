@@ -40,7 +40,7 @@ Authentication: FireBase Auth
 
 1. Clone the repository:
 
-git clone https://github.com/amulya1977/edify2.git
+<!-- git clone https://github.com/amulya1977/edify2.git -->
 cd edify2
 
 

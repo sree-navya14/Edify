@@ -35,7 +35,7 @@ export default function Footer() {
         <div className="footer-section">
           <h3>Edify</h3>
           <ul>
-            <li><Link to="/about" aria-label="About Edify">About Us</Link></li>
+            <li><Link to="/AboutUs" aria-label="About Edify">About Us</Link></li>
             <li><Link to="/contact" aria-label="Contact Edify">Contact Us</Link></li>
           </ul>
         </div>

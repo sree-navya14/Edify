@@ -4,7 +4,7 @@ import "../styles/courses2.css";
 
 const courses = [
   { title: "Python Developer", image: "/python.png", path: "/PythonCourse" },
-  { title: "Java Developer", image: "/java.jpg", path: "/JavaCourse" },
+  { title: "Java Developer", image: "/java.png", path: "/JavaCourse" },
   { title: "Quality Assurance", image: "/quality.jpg", path: "/QACourse" },
   { title: "MERN Stack", image: "/mern.webp", path: "/MernCourse" },
   { title: "DevOps", image: "/dev.webp", path: "/DevOpsCourse" },

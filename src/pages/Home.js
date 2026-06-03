@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/home.css";
 import FlipCard from "../components/FlipCard";
 
 // Import local images
 import careerImage from "../assets/your-image.png";
-import gradHat from "../components/gradHat.png";
-import money from "../components/money.png";
-import handshake from "../components/handshake.png";
-import calendar from "../components/calendar.png";
-import certificate from "../components/certificate.png";
+import gradHat from "../images/gradHat.png";
+import money from "../images/money.png";
+import handshake from "../images/handshake.png";
+import calendar from "../images/calendar.png";
+import certificate from "../images/certificate.png";
 
 export default function Home() {
-  const auth = getAuth();
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -22,18 +21,27 @@ export default function Home() {
     interest: ""
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, [auth]);
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/me", {
+          withCredentials: true
+        });
+        setUser(res.data.user);
+      } catch (err) {
+        setUser(null); // Not logged in
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleStartJourney = (e) => {
     if (!user) {
       e.preventDefault();
       alert("Please log in to start your journey!");
+      navigate("/login"); // Optional: redirect to login
     }
   };
 
@@ -45,51 +53,55 @@ export default function Home() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/boost-career",
+      formData,
+      { withCredentials: true }
+    );
     setFormSubmitted(true);
-    setFormData({ name: "", email: "", mobile: "", interest: "" });
-    
-    // Reset form submission status after 5 seconds
-    setTimeout(() => setFormSubmitted(false), 5000);
-  };
+  } catch (err) {
+    console.error("Form submission failed:", err);
+  }
+};
+
 
   const cards = [
     {
       frontImage: "https://digitallearning.eletsonline.com/wp-content/uploads/2019/03/Online-courses.jpg",
       frontText: "Free Courses 🎓",
       backImage: gradHat,
-      backText: "Provide free online courses in subjects like tech, design and many other. Courses include video lectures, assignments. All students have access to content, with optional certification upgrades.",
+      backText: "Free online courses in tech, design, and more with video lectures and assignments. Access all content for free; optional paid certification available.",
       altText: "Online courses illustration"
     },
     {
       frontImage: "https://www.ssims.edu.in/wp-content/uploads/2020/03/ssit-students-scholarship-loans.jpg",
       frontText: "Scholarships 💰",
       backImage: money,
-      backText: "Offer financial aid or full scholarships to students based on merit or need. Application process with eligibility criteria. Automatic recommendations based on user profile & course engagement.",
+      backText: "Offer financial aid or scholarships based on merit or need, with eligibility criteria and automatic recommendations from user profile and course activity.",
       altText: "Scholarship illustration"
     },
     {
       frontImage: "https://virtuzone.com/wp-content/uploads/2023/07/business-mentorship-6.jpg",
       frontText: "Mentorship 🤝",
       backImage: handshake,
-      backText: "One-on-one & group mentorship available for all registered. Experienced industry professionals and educators help students with career guidance, and problem-solving. Scheduled live Q&A sessions, webinars.",
+      backText: "One-on-one and group mentorship by industry experts for career guidance and problem-solving, with live Q&A sessions and webinars.",
       altText: "Mentorship illustration"
     },
     {
       frontImage: "https://veracontent.com/contenedor/uploads/2021/08/windows-SwHvzwEzCfA-unsplash.jpg",
       frontText: "Scheduler 📅",
       backImage: calendar,
-      backText: "Our study planner helps students organize their learning. Generates a personalized study plan based on selected courses, availability, and deadlines. Calendar integration for tracking assignments.",
+      backText: "Our study planner creates personalized plans based on courses, availability, and deadlines, with calendar integration for tracking assignments.",
       altText: "Calendar illustration"
     },
     {
       frontImage: "https://static.vecteezy.com/system/resources/previews/002/349/754/non_2x/modern-elegant-certificate-template-free-vector.jpg",
       frontText: "Certification 📜",
       backImage: certificate,
-      backText: "Students receive verified certificates upon course completion. Certificates include QR codes & digital verification for employers. Option for premium industry-recognized certificates.",
+      backText: "Students get verified certificates with QR codes and digital verification, plus optional premium industry-recognized certificates.",
       altText: "Certificate illustration"
     },
   ];
@@ -127,10 +139,9 @@ export default function Home() {
       
       {/* Track Section */}
       <section className="track-section" aria-labelledby="tracks-heading">
-        <h2 id="tracks-heading" className="section-title">Types of Track Offerings</h2>
+        <h2 id="tracks-heading" className="section-title">🎓 Explore Our Career Tracks</h2>
         <p className="section-description">
-          Edify Career Tracks go beyond traditional lessons or courses by immersing you in real-world 
-          in-demand skills, projects, and challenges, giving you the experience and confidence to succeed in your career.
+        Edify Career Tracks go beyond traditional courses by immersing you in real-world skills, hands-on projects, and industry challenges—building the experience and confidence you need to thrive in your career.
         </p>
 
         <div className="track-container">
@@ -171,7 +182,6 @@ export default function Home() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
-                  <label htmlFor="name" className="form"></label>
                   <input 
                     type="text" 
                     id="name"
@@ -182,7 +192,6 @@ export default function Home() {
                     required 
                   />
                   
-                  <label htmlFor="email" className="sr-only"></label>
                   <input 
                     type="email" 
                     id="email"
@@ -193,7 +202,6 @@ export default function Home() {
                     required 
                   />
                   
-                  <label htmlFor="mobile" className="sr-only"></label>
                   <input 
                     type="tel" 
                     id="mobile"
@@ -204,7 +212,6 @@ export default function Home() {
                     required 
                   />
                   
-                  <label htmlFor="interest" className="sr-only"></label>
                   <select 
                     id="interest"
                     name="interest"
@@ -228,7 +235,7 @@ export default function Home() {
 
       {/* Flip Cards Section */}
       <section className="flip-cards-section" aria-labelledby="features-heading">
-        <h2 id="features-heading" className="sr-only">Key Features</h2>
+        <h2 id="features-heading" className="sr-only">🚀 What Sets Us Apart</h2>
         <div className="card-container">
           {cards.map((card, index) => (
             <FlipCard
@@ -242,6 +249,33 @@ export default function Home() {
           ))}
         </div>
       </section>
+<section className="about-section" aria-labelledby="about-heading">
+      <div className="about-wrapper">
+        {/* Text Content */}
+        <div className="about-content">
+          <h2 id="about-heading">👥 Who Are We?</h2>
+          <p>
+            At Edify, we are passionate educators, developers, and dreamers
+            committed to transforming education through practical learning. Our
+            platform combines expert-curated content, real-world projects, and
+            mentorship to help learners build careers, not just skills.
+          </p>
+          <Link to="/AboutUs" className="about-link-btn">
+            Know More About Us →
+          </Link>
+        </div>
+
+        {/* Image Content */}
+        <div className="about-image-container">
+          <img
+            src="/istockphoto-1500285927-612x612.jpg"
+            alt="About Edify"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
     </div>
+    
   );
 }

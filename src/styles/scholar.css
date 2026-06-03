@@ -1,7 +1,6 @@
-/* Main container */
 .scholar-page-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  background: #121212;
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -15,24 +14,24 @@
 
 .scholar-header h2 {
   font-size: 2.5rem;
-  color: #1e3a8a;
+  color: #4db5ff;
   margin-bottom: 1rem;
   font-weight: 700;
 }
 
 .header-description {
   font-size: 1.1rem;
-  color: #4b5563;
+  color: #ffffff;
   line-height: 1.6;
 }
 
 /* Scholarship list container */
 .scholarship-list-container {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  /* background-color: white; */
+  /* border-radius: 12px; */
+  /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),  */
+              /* 0 2px 4px -1px rgba(0, 0, 0, 0.06); */
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
 }

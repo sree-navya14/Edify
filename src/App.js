@@ -12,9 +12,20 @@ import Courses2 from "./components/courses2";
 import JavaCourse from "./pages/JavaCourse";
 import Profile from "./pages/profile";
 import PythonCourse from "./pages/pythonCourse";
-import Schedule from "./pages/schedule";
-import ForgotPassword from "./pages/forgotpassword";
+import CourseSchedule from "./pages/schedule";
+import EnrolledCourses from "./pages/EnrolledCourses";
+import CompletedCourses from "./pages/CompletedCourses";
+import About from './pages/AboutUs';
 
+// inside your <Routes> block
+
+
+
+
+
+
+import ForgotPassword from "./pages/forgotpassword";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -30,8 +41,12 @@ function App() {
         <Route path="/JavaCourse" element={<JavaCourse/>}/>
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/pythonCourse" element={<PythonCourse/>}/>
-        <Route path="/schedule" element={<Schedule/>}/>
+  <Route path="/enrolled-courses" element={<EnrolledCourses />} />
+  <Route path="/completed-courses" element={<CompletedCourses />} />
         <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/schedule/:courseId" element={<CourseSchedule />} />
+        <Route path="/AboutUs" element={<About />} />
 
       </Routes>
       <Footer />

@@ -1,87 +1,175 @@
 /* Course Card Styles */
-.course-card {
-    margin-bottom:auto ;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 320px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.course-card1 {
+  margin-bottom: auto;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  max-width: 300px; /* Increased from 400px */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #ddd;
+}
+
+
+.course-card1:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.9);
+}
+
+/* Course Image */
+.course-images1 {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(255 255 255 / 0.1);
+}
+
+/* Tag Badge */
+.tag {
+  display: inline-block;
+  background-color: #28a745;
+  color: #fff;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin-top: 10px;
+  user-select: none;
+}
+
+/* Course Title */
+.course-info h2 {
+  font-size: 22px;
+  color: #eee;
+  margin-top: 10px;
+}
+
+/* Price */
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2d7cda;
+  margin: 10px 0;
+}
+
+/* Start Button */
+.start-btn {
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  user-select: none;
+}
+
+.start-btn:hover {
+  background-color: #218838;
+}
+
+.start-btn.enrolled,
+.start-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  color: #bbb;
+}
+
+/* Course Details */
+.course-details {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.course-details li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.course-details li::before {
+  content: "✔";
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .course-card1 {
+    width: 90vw;
+    max-width: 400px;
+    padding: 15px;
   }
-  
-  .course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Course Image */
-  .course-images {
-    width: 100%;
-    border-radius: 8px;
-  }
-  
-  /* Tag Badge */
-  .tag {
-    display: inline-block;
-    background-color: #28a745;
-    color: #fff;
-    font-size: 14px;
-    padding: 5px 10px;
-    border-radius: 15px;
-    margin-top: 10px;
-  }
-  
-  /* Course Title */
+
   .course-info h2 {
-    font-size: 22px;
-    color: #333;
-    margin-top: 10px;
-  }
-  
-  /* Price */
-  .price {
     font-size: 20px;
-    font-weight: bold;
-    color: #2d7cda;
-    margin: 10px 0;
   }
-  
-  /* Start Button */
+
+  .price {
+    font-size: 18px;
+  }
+
   .start-btn {
-    background-color: #28a745;
-    color: white;
-    font-size: 16px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    font-size: 15px;
+    padding: 8px 16px;
   }
-  
-  .start-btn:hover {
-    background-color: #218838;
-  }
-  
-  /* Course Details */
+
   .course-details {
-    list-style: none;
-    padding: 0;
-    margin-top: 15px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .course-card1 {
+    width: 95vw;
+    padding: 12px;
+  }
+
+  .course-info h2 {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 16px;
+  }
+
+  .start-btn {
     font-size: 14px;
-    color: #666;
+    padding: 8px 12px;
   }
-  
-  .course-details li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 0;
+
+  .course-details {
+    font-size: 12px;
   }
-  
-  .course-details li::before {
-    content: "✔";
-    color: #28a745;
-    font-weight: bold;
+}
+/* Small width & tall height devices (e.g. portrait phones) */
+@media (max-width: 480px) and (min-height: 700px) {
+  .course-card1 {
+    width: 95vw;         /* almost full width */
+    max-width: 350px;    /* slightly narrower */
+    padding: 18px 15px;  /* a bit more padding for readability */
+    border-radius: 12px; /* slightly rounder corners */
   }
-  
+
+  .course-info h2 {
+    font-size: 20px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .start-btn {
+    font-size: 15px;
+    padding: 10px 18px;
+  }
+
+  .course-details {
+    font-size: 13px;
+  }
+}

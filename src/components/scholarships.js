@@ -53,7 +53,7 @@ const scholarships = [
 
 const styles = {
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#1e1e1e",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     borderRadius: "12px",
     padding: "20px",
@@ -68,7 +68,7 @@ const styles = {
     fontSize: "20px",
     fontWeight: "bold",
     marginBottom: "10px",
-    color: "#333",
+    color: "#fff",
   },
   provider: {
     fontSize: "14px",
@@ -76,9 +76,9 @@ const styles = {
     marginBottom: "10px",
   },
   amount: {
-    fontSize: "16px",
-    fontWeight: "bold",
-    color: "#27ae60",
+    fontSize: "14px",
+    // fontWeight: "bold",
+    color: "#fff",
     marginBottom: "10px",
   },
   deadline: {

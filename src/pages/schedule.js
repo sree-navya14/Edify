@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
-import "../styles/schedule.css"; // Import CSS
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../styles/schedule.css";
 
 const courseSchedules = {
   java_course: {
     title: "Java Developer",
-    image: "/java.jpg",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlytRRYe4je0g5y3CR8NS1xkrAvurMcvSAxQ&s",
     days: Array.from({ length: 15 }, (_, i) => ({
       title: `Day ${i + 1} - Java Lesson`,
       videos: [`https://youtu.be/java${i + 1}`],
@@ -23,119 +22,116 @@ const courseSchedules = {
   },
 };
 
-const Schedule = () => {
-  const [user, setUser] = useState(null);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [expandedCourse, setExpandedCourse] = useState(null);
-  const [dayStatus, setDayStatus] = useState({});
+const CourseSchedule = () => {
+  const { courseId } = useParams();
   const navigate = useNavigate();
-  const auth = getAuth();
-  const db = getFirestore();
-  
-  const fetchUserCourses = async (userId) => {
-    try {
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        setEnrolledCourses(userData.enrolledCourses || []);
-        setDayStatus(userData.dayProgress || {});
-      }
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
+
+  const [user, setUser] = useState(null);
+  const [dayStatus, setDayStatus] = useState({});
+  const course = courseSchedules[courseId];
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        fetchUserCourses(currentUser.uid);  // ✅ Using fetchUserCourses
-      } else {
-        navigate("/login");
-      }
-    });
-    return () => unsubscribe();
-  }, [auth, navigate, fetchUserCourses]); // ✅ Add all dependencies
-  
+    axios
+      .get("http://localhost:5000/api/me", { withCredentials: true })
+      .then((res) => {
+        setUser(res.data.user);
+        setDayStatus(res.data.user.dayProgress || {});
+      })
+      .catch(() => navigate("/login"));
+  }, [navigate]);
 
+  if (!course) return <p>Invalid course</p>;
 
-  const toggleDayStatus = async (courseId, dayIndex) => {
-    const updatedStatus = { ...dayStatus };
-    updatedStatus[courseId] = updatedStatus[courseId] || {};
-    updatedStatus[courseId][dayIndex] = !updatedStatus[courseId][dayIndex];
+  const toggleDayStatus = async (dayIndex) => {
+    const updated = { ...dayStatus };
+    if (!updated[courseId]) updated[courseId] = {};
+    updated[courseId][dayIndex] = !updated[courseId][dayIndex];
+    setDayStatus(updated);
 
-    setDayStatus(updatedStatus);
-
-    const userRef = doc(db, "users", user.uid);
-    await updateDoc(userRef, { dayProgress: updatedStatus });
-
-    checkCourseCompletion(courseId, updatedStatus);
+    try {
+      await axios.put(
+        "http://localhost:5000/api/progress",
+        { dayProgress: updated },
+        { withCredentials: true }
+      );
+      await checkCourseCompletion(updated);
+    } catch (err) {
+      console.error("Failed to update progress", err);
+    }
   };
 
-  const checkCourseCompletion = async (courseId, updatedStatus) => {
-    const completedDays = Object.values(updatedStatus[courseId] || {}).filter(Boolean).length;
-    const totalDays = courseSchedules[courseId]?.days.length || 0;
-
-    if (completedDays === totalDays) {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const updatedEnrolledCourses = userData.enrolledCourses.filter((id) => id !== courseId);
-        const updatedCompletedCourses = [...(userData.completedCourses || []), courseId];
-        await updateDoc(userRef, {
-          enrolledCourses: updatedEnrolledCourses,
-          completedCourses: updatedCompletedCourses,
-        });
-        setEnrolledCourses(updatedEnrolledCourses);
+  const checkCourseCompletion = async (updated) => {
+    const completed = Object.values(updated[courseId] || {}).filter(Boolean).length;
+    if (completed === course.days.length) {
+      try {
+        await axios.put(
+          "http://localhost:5000/api/mark-completed",
+          { courseId },
+          { withCredentials: true }
+        );
+      } catch (err) {
+        console.error("Failed to mark course as completed", err);
       }
     }
   };
+
+  const completedDays = Object.values(dayStatus[courseId] || {}).filter(Boolean).length;
+  const totalDays = course.days.length;
 
   return (
     <div className="schedule-page">
-      <h1 className="schedule-title">Course Schedule</h1>
-      {enrolledCourses.length > 0 ? (
-        enrolledCourses.map((courseId) => {
-          const course = courseSchedules[courseId];
-          const completedDays = Object.values(dayStatus[courseId] || {}).filter(Boolean).length;
-          const totalDays = course.days.length;
+      <div className="content-container">
+        {/* Left: Video */}
+        <div className="video-section">
+          <iframe
+            width="100%"
+            height="300"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="Course Preview"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <p className="lecture-title-main">Lecture 1: Introduction to Course</p>
+        </div>
 
-          return (
-            <div key={courseId} className="course-section">
-              <div className="course-header" onClick={() => setExpandedCourse(expandedCourse === courseId ? null : courseId)}>
-                <img src={course.image} alt={course.title} className="course-image" />
-                <h2>{course.title}</h2>
-                <span className="days-completed">Days Completed: {completedDays}/{totalDays}</span>
-              </div>
-              {expandedCourse === courseId && (
-                <div className="course-dropdown">
-                  {course.days.map((day, dayIndex) => (
-                    <div key={dayIndex} className="day-item">
-                      <input
-                        type="checkbox"
-                        checked={dayStatus[courseId]?.[dayIndex] || false}
-                        onChange={() => toggleDayStatus(courseId, dayIndex)}
-                      />
-                      <span>{day.title}</span>
-                      {day.videos.map((video, vidIndex) => (
-                        <a key={vidIndex} href={video} target="_blank" rel="noopener noreferrer">
-                          📺 Video {vidIndex + 1}
-                        </a>
-                      ))}
-                    </div>
+        {/* Right: Lectures */}
+        <div className="lecture-section">
+          <h2 className="course-title">{course.title}</h2>
+          <p className="course-progress">Days Completed: {completedDays}/{totalDays}</p>
+
+          <div className="lecture-list">
+            {course.days.map((day, index) => (
+              <div key={index} className="lecture-item">
+                <label className="lecture-label">
+                  <input
+                    type="checkbox"
+                    checked={dayStatus[courseId]?.[index] || false}
+                    onChange={() => toggleDayStatus(index)}
+                  />
+                  <span>{day.title}</span>
+                </label>
+                <div className="lecture-links">
+                  {day.videos.map((video, i) => (
+                    <a
+                      key={i}
+                      href={video}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      📺 Video {i + 1}
+                    </a>
                   ))}
                 </div>
-              )}
-            </div>
-          );
-        })
-      ) : (
-        <p>No courses enrolled.</p>
-      )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Schedule;
+export default CourseSchedule;
+
+

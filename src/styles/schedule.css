@@ -1,84 +1,91 @@
-/* General Page Styling */
+/* Page wrapper */
 .schedule-page {
-  padding: 20px;
-  background-color: #ffffff;
-  color: #000000;
-  font-family: Arial, sans-serif;
+  background-color: #0f0f0f;
+  color: #ffffff;
+  min-height: 100vh;
+  padding: 30px;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.schedule-title {
-  text-align: center;
+/* Layout split */
+.content-container {
+  display: flex;
+  gap: 30px;
+}
+
+/* Left section (Video) */
+.video-section {
+  flex: 2;
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.lecture-title-main {
+  font-size: 18px;
+  margin-top: 12px;
+  color: #dddddd;
+}
+
+/* Right section (Lectures) */
+.lecture-section {
+  flex: 1;
+  background-color: #1a1a1a;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.course-title {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.course-progress {
+  font-size: 14px;
+  color: #bbbbbb;
   margin-bottom: 20px;
 }
 
-/* Course Section Styling */
-.course-section {
-  background: #f6f6f6;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  overflow: hidden;
+/* Lecture list */
+.lecture-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.course-header {
+.lecture-item {
+  border-bottom: 1px solid #333;
+  padding-bottom: 12px;
+}
+
+.lecture-label {
   display: flex;
   align-items: center;
-  padding: 15px;
-  cursor: pointer;
-  background: #e9e9e9;
-  border-bottom: 2px solid #5697de;
-}
-
-.course-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 25px;
-}
-
-.course-header h2 {
-  font-size: 22px;
-  font-weight: bold;
-  flex-grow: 1;
-}
-
-/* Course Dropdown Styling */
-.course-dropdown {
-  padding: 10px 15px;
-}
-
-.day-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ffffff;
   font-size: 16px;
+  gap: 12px;
 }
 
-.day-item:last-child {
-  border-bottom: none;
-}
-
-.day-item input[type='checkbox'] {
+.lecture-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: #5697de;
+  accent-color: #4ba3fd;
 }
 
-/* Progress Bar Styling */
-.progress-container {
-  width: 100%;
-  background: #ffffff;
-  height: 5px;
+.lecture-links {
   margin-top: 5px;
-  border-radius: 3px;
+  padding-left: 28px;
 }
 
-/* .progress-bar {
-  height: 5px;
-  background: #5697de;
-  border-radius: 3px;
-  transition: width 0.3s ease-in-out;
-} */
+.lecture-links a {
+  text-decoration: none;
+  color: #4ba3fd;
+  font-size: 14px;
+}
+
+.lecture-links a:hover {
+  text-decoration: underline;
+}
+
